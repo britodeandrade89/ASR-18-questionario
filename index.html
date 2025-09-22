@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ASRS-18 - Questionário de Autoavaliação</title>
+    <style>
+        /* TODO O CÓDIGO CSS AQUI */
+    </style>
+</head>
+<body>
+    <!-- TODO O CÓDIGO HTML AQUI -->
+    
+    <script>
+        // TODO O CÓDIGO JAVASCRIPT AQUI
+    </script>
+</body>
+</html>
