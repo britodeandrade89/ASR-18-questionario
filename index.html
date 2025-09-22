@@ -5,14 +5,673 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ASRS-18 - Questionário de Autoavaliação</title>
     <style>
-        /* TODO O CÓDIGO CSS AQUI */
+        :root {
+            --primary-color: #4a6fa5;
+            --secondary-color: #6b8cbc;
+            --accent-color: #ff6b6b;
+            --light-color: #f5f7fa;
+            --dark-color: #2c3e50;
+            --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            --border-radius: 8px;
+            --low-color: #5cb85c;
+            --medium-color: #f0ad4e;
+            --high-color: #d9534f;
+        }
+        
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: var(--light-color);
+            color: var(--dark-color);
+            line-height: 1.6;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background-color: white;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            padding: 30px;
+        }
+        
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 20px;
+        }
+        
+        h1 {
+            color: var(--primary-color);
+            margin-bottom: 10px;
+        }
+        
+        .header-info {
+            background-color: #f0f7ff;
+            border-left: 4px solid var(--primary-color);
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 0 var(--border-radius) var(--border-radius) 0;
+            text-align: left;
+        }
+        
+        .header-info h2 {
+            color: var(--primary-color);
+            margin-bottom: 15px;
+            text-align: center;
+        }
+        
+        .instructions {
+            background-color: #f9f9f9;
+            border-left: 4px solid var(--secondary-color);
+            padding: 15px;
+            margin-bottom: 20px;
+            border-radius: 0 var(--border-radius) var(--border-radius) 0;
+        }
+        
+        .question-section {
+            margin-bottom: 30px;
+        }
+        
+        h2 {
+            color: var(--primary-color);
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .question {
+            margin-bottom: 20px;
+            padding: 15px;
+            background-color: #f9f9f9;
+            border-radius: var(--border-radius);
+        }
+        
+        .question-text {
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+        
+        .options {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 10px;
+        }
+        
+        .option {
+            flex: 1;
+            min-width: 100px;
+            text-align: center;
+            padding: 8px 5px;
+            background-color: white;
+            border: 1px solid #ddd;
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .option:hover {
+            background-color: #f0f0f0;
+        }
+        
+        .option.selected {
+            background-color: var(--primary-color);
+            color: white;
+            border-color: var(--primary-color);
+        }
+        
+        .part-a .option.selected.shaded {
+            background-color: var(--accent-color);
+            border-color: var(--accent-color);
+        }
+        
+        .part-b .option.selected.shaded {
+            background-color: #ffa94d;
+            border-color: #ffa94d;
+        }
+        
+        .shaded-indicator {
+            font-size: 0.8em;
+            color: #666;
+            margin-top: 5px;
+        }
+        
+        .btn {
+            display: block;
+            width: 100%;
+            padding: 12px;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: var(--border-radius);
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            margin-top: 20px;
+        }
+        
+        .btn:hover {
+            background-color: var(--secondary-color);
+        }
+        
+        .btn:disabled {
+            background-color: #ccc;
+            cursor: not-allowed;
+        }
+        
+        .results {
+            display: none;
+            margin-top: 30px;
+            padding: 20px;
+            background-color: #f0f7ff;
+            border-radius: var(--border-radius);
+        }
+        
+        .score {
+            font-size: 24px;
+            font-weight: bold;
+            text-align: center;
+            margin-bottom: 20px;
+            color: var(--primary-color);
+        }
+        
+        .probability-result {
+            text-align: center;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: var(--border-radius);
+            font-size: 22px;
+            font-weight: bold;
+        }
+        
+        .low-probability {
+            background-color: var(--low-color);
+            color: white;
+        }
+        
+        .medium-probability {
+            background-color: var(--medium-color);
+            color: white;
+        }
+        
+        .high-probability {
+            background-color: var(--high-color);
+            color: white;
+        }
+        
+        .recommendation {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: white;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+        }
+        
+        .criteria {
+            margin-top: 30px;
+        }
+        
+        .criteria h3 {
+            color: var(--primary-color);
+            margin-bottom: 10px;
+        }
+        
+        .references {
+            margin-top: 30px;
+            font-size: 0.9em;
+            color: #666;
+        }
+        
+        @media (max-width: 600px) {
+            .options {
+                flex-direction: column;
+            }
+            
+            .option {
+                min-width: 100%;
+            }
+        }
     </style>
 </head>
 <body>
-    <!-- TODO O CÓDIGO HTML AQUI -->
-    
+    <div class="container">
+        <header>
+            <h1>ASRS-18 - Questionário de Autoavaliação</h1>
+            <p>Instrumento de triagem para sintomas de TDAH em adultos</p>
+        </header>
+        
+        <div class="header-info">
+            <h2>TDAH: Autoavaliação para Adultos ASRS-18</h2>
+            <p>Pesquisas apontam que os sintomas de TDAH podem persistir durante a vida adulta, tendo impacto significante em relacionamentos, carreiras e até na segurança pessoal dos pacientes que sofrem o transtorno (veja referência ao final).</p>
+            <p>Como o transtorno é comumente mal interpretado, muitas pessoas que o têm não recebem tratamento apropriado e, como resultado disso, podem nunca desenvolver seu potencial por completo. Parte do problema é a dificuldade em diagnosticar, particularmente em adultos.</p>
+            <p>A escala de autoavaliação dos adultos – conhecida como ASRS-v1.1 ou ASRS-18 – é uma lista de sintomas que leva cerca de cinco minutos para ser preenchida. Esse questionário se destina a estimular o diálogo do médico com o paciente e a confirmar a existência de sintomas do transtorno. O conteúdo do questionário auxilia a descoberta de sintomas, deficiências e histórico que podem levar ao diagnóstico correto.</p>
+            <p>Os 18 critérios avaliados de acordo com o Manual Diagnóstico e Estatístico de Transtornos Mentais (DSM-IV-TR). Seis das 18 perguntas (Parte A) trazem sintomas mais consistentes com o diagnóstico de TDAH e, portanto, são a base do ASRS-18. Já A Parte B traz as 12 demais perguntas que auxiliam na pesquisa.</p>
+            <p><strong>Importante:</strong> O questionário é apenas um ponto de partida para levantamento de alguns possíveis sintomas primários do TDAH. O diagnóstico correto e preciso do TDAH só pode ser feito através de uma longa anamnese (entrevista) com um profissional médico especializado (psiquiatra, neurologista, neuropediatra). Muitos dos sintomas abaixo relacionados podem estar associados a outras comorbidades correlatas ao TDAH e outras condições clínicas e psicológicas. Qualquer diagnóstico só pode ser fornecido por um profissional médico.</p>
+        </div>
+        
+        <div class="instructions">
+            <h2>Instruções para Preenchimento</h2>
+            <p>1. Complete as partes A e B do quadro de sintomas marcando o quadrado que melhor representa a frequência da ocorrência do sintoma em questão.</p>
+            <p>2. <strong>Parte A:</strong> Se quatro ou mais marcações estiverem na área sombreada (mais escura), os sintomas são altamente compatíveis com um diagnóstico e por isso uma investigação mais precisa deve ser feita. As seis perguntas da parte A são um indicativo maior do transtorno e, portanto, consideradas as mais importantes do exame.</p>
+            <p>3. A <strong>Parte B</strong> fornece informações mais minuciosas para auxiliar o diagnóstico de sintomas do paciente, com especial atenção às marcações de áreas sombreadas. Não existe pontuação mínima na parte B.</p>
+        </div>
+        
+        <form id="asrs-form">
+            <div class="question-section part-a">
+                <h2>Parte A</h2>
+                
+                <div class="question" id="q1">
+                    <div class="question-text">1. Com que frequência você deixa um projeto pela metade depois de já ter feito as partes mais difíceis?</div>
+                    <div class="options">
+                        <div class="option" data-value="0">Nunca</div>
+                        <div class="option" data-value="1">Quase nunca</div>
+                        <div class="option shaded" data-value="2">De vez em quando</div>
+                        <div class="option shaded" data-value="3">Quase sempre</div>
+                        <div class="option shaded" data-value="4">Sempre</div>
+                    </div>
+                </div>
+                
+                <div class="question" id="q2">
+                    <div class="question-text">2. Com que frequência você tem dificuldade para fazer um trabalho que exige organização?</div>
+                    <div class="options">
+                        <div class="option" data-value="0">Nunca</div>
+                        <div class="option" data-value="1">Quase nunca</div>
+                        <div class="option shaded" data-value="2">De vez em quando</div>
+                        <div class="option shaded" data-value="3">Quase sempre</div>
+                        <div class="option shaded" data-value="4">Sempre</div>
+                    </div>
+                </div>
+                
+                <div class="question" id="q3">
+                    <div class="question-text">3. Com que frequência você tem dificuldade para lembrar de compromissos ou obrigações?</div>
+                    <div class="options">
+                        <div class="option" data-value="0">Nunca</div>
+                        <div class="option" data-value="1">Quase nunca</div>
+                        <div class="option shaded" data-value="2">De vez em quando</div>
+                        <div class="option shaded" data-value="3">Quase sempre</div>
+                        <div class="option shaded" data-value="4">Sempre</div>
+                    </div>
+                </div>
+                
+                <div class="question" id="q4">
+                    <div class="question-text">4. Quando você precisa fazer algo que exige muita concentração, com que frequência você evita ou adia o início?</div>
+                    <div class="options">
+                        <div class="option" data-value="0">Nunca</div>
+                        <div class="option" data-value="1">Quase nunca</div>
+                        <div class="option shaded" data-value="2">De vez em quando</div>
+                        <div class="option shaded" data-value="3">Quase sempre</div>
+                        <div class="option shaded" data-value="4">Sempre</div>
+                    </div>
+                </div>
+                
+                <div class="question" id="q5">
+                    <div class="question-text">5. Com que frequência você fica se mexendo na cadeira ou balançando as mãos ou os pés quando precisa ficar sentado (a) por muito tempo?</div>
+                    <div class="options">
+                        <div class="option" data-value="0">Nunca</div>
+                        <div class="option" data-value="1">Quase nunca</div>
+                        <div class="option shaded" data-value="2">De vez em quando</div>
+                        <div class="option shaded" data-value="3">Quase sempre</div>
+                        <div class="option shaded" data-value="4">Sempre</div>
+                    </div>
+                </div>
+                
+                <div class="question" id="q6">
+                    <div class="question-text">6. Com que frequência você se sente ativo (a) demais e necessitando fazer coisas, como se estivesse "com um motor ligado"?</div>
+                    <div class="options">
+                        <div class="option" data-value="0">Nunca</div>
+                        <div class="option" data-value="1">Quase nunca</div>
+                        <div class="option shaded" data-value="2">De vez em quando</div>
+                        <div class="option shaded" data-value="3">Quase sempre</div>
+                        <div class="option shaded" data-value="4">Sempre</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="question-section part-b">
+                <h2>Parte B</h2>
+                
+                <div class="question" id="q7">
+                    <div class="question-text">7. Com que frequência você comete erros bobos por falta de atenção quando tem de trabalhar num projeto chato ou difícil?</div>
+                    <div class="options">
+                        <div class="option" data-value="0">Nunca</div>
+                        <div class="option" data-value="1">Quase nunca</div>
+                        <div class="option shaded" data-value="2">De vez em quando</div>
+                        <div class="option shaded" data-value="3">Quase sempre</div>
+                        <div class="option shaded" data-value="4">Sempre</div>
+                    </div>
+                </div>
+                
+                <div class="question" id="q8">
+                    <div class="question-text">8. Com que frequência você tem dificuldade para manter a atenção quando está fazendo um trabalho chato ou repetitivo?</div>
+                    <div class="options">
+                        <div class="option" data-value="0">Nunca</div>
+                        <div class="option" data-value="1">Quase nunca</div>
+                        <div class="option shaded" data-value="2">De vez em quando</div>
+                        <div class="option shaded" data-value="3">Quase sempre</div>
+                        <div class="option shaded" data-value="4">Sempre</div>
+                    </div>
+                </div>
+                
+                <div class="question" id="q9">
+                    <div class="question-text">9. Com que frequência você tem dificuldade para se concentrar no que as pessoas dizem, mesmo quando elas estão falando diretamente com você?</div>
+                    <div class="options">
+                        <div class="option" data-value="0">Nunca</div>
+                        <div class="option" data-value="1">Quase nunca</div>
+                        <div class="option shaded" data-value="2">De vez em quando</div>
+                        <div class="option shaded" data-value="3">Quase sempre</div>
+                        <div class="option shaded" data-value="4">Sempre</div>
+                    </div>
+                </div>
+                
+                <div class="question" id="q10">
+                    <div class="question-text">10. Com que frequência você coloca as coisas fora do lugar ou tem dificuldade de encontrar as coisas em casa ou no trabalho?</div>
+                    <div class="options">
+                        <div class="option" data-value="0">Nunca</div>
+                        <div class="option" data-value="1">Quase nunca</div>
+                        <div class="option shaded" data-value="2">De vez em quando</div>
+                        <div class="option shaded" data-value="3">Quase sempre</div>
+                        <div class="option shaded" data-value="4">Sempre</div>
+                    </div>
+                </div>
+                
+                <div class="question" id="q11">
+                    <div class="question-text">11. Com que frequência você se distrai com atividades ou barulho a sua volta?</div>
+                    <div class="options">
+                        <div class="option" data-value="0">Nunca</div>
+                        <div class="option" data-value="1">Quase nunca</div>
+                        <div class="option shaded" data-value="2">De vez em quando</div>
+                        <div class="option shaded" data-value="3">Quase sempre</div>
+                        <div class="option shaded" data-value="4">Sempre</div>
+                    </div>
+                </div>
+                
+                <div class="question" id="q12">
+                    <div class="question-text">12. Com que frequência você se sente inquieto (a) ou agitado (a)?</div>
+                    <div class="options">
+                        <div class="option" data-value="0">Nunca</div>
+                        <div class="option" data-value="1">Quase nunca</div>
+                        <div class="option shaded" data-value="2">De vez em quando</div>
+                        <div class="option shaded" data-value="3">Quase sempre</div>
+                        <div class="option shaded" data-value="4">Sempre</div>
+                    </div>
+                </div>
+                
+                <div class="question" id="q13">
+                    <div class="question-text">13. Com que frequência você tem dificuldade para sossegar e relaxar quando tem tempo livre para você?</div>
+                    <div class="options">
+                        <div class="option" data-value="0">Nunca</div>
+                        <div class="option" data-value="1">Quase nunca</div>
+                        <div class="option shaded" data-value="2">De vez em quando</div>
+                        <div class="option shaded" data-value="3">Quase sempre</div>
+                        <div class="option shaded" data-value="4">Sempre</div>
+                    </div>
+                </div>
+                
+                <div class="question" id="q14">
+                    <div class="question-text">14. Com que frequência você se pega falando demais em situações sociais?</div>
+                    <div class="options">
+                        <div class="option" data-value="0">Nunca</div>
+                        <div class="option" data-value="1">Quase nunca</div>
+                        <div class="option shaded" data-value="2">De vez em quando</div>
+                        <div class="option shaded" data-value="3">Quase sempre</div>
+                        <div class="option shaded" data-value="4">Sempre</div>
+                    </div>
+                </div>
+                
+                <div class="question" id="q15">
+                    <div class="question-text">15. Com que frequência você se levanta da cadeira em reuniões ou em outras situações onde deveria ficar sentado (a)?</div>
+                    <div class="options">
+                        <div class="option" data-value="0">Nunca</div>
+                        <div class="option" data-value="1">Quase nunca</div>
+                        <div class="option shaded" data-value="2">De vez em quando</div>
+                        <div class="option shaded" data-value="3">Quase sempre</div>
+                        <div class="option shaded" data-value="4">Sempre</div>
+                    </div>
+                </div>
+                
+                <div class="question" id="q16">
+                    <div class="question-text">16. Quando você está conversando, com que frequência você se peça terminando as frases das pessoas antes delas?</div>
+                    <div class="options">
+                        <div class="option" data-value="0">Nunca</div>
+                        <div class="option" data-value="1">Quase nunca</div>
+                        <div class="option shaded" data-value="2">De vez em quando</div>
+                        <div class="option shaded" data-value="3">Quase sempre</div>
+                        <div class="option shaded" data-value="4">Sempre</div>
+                    </div>
+                </div>
+                
+                <div class="question" id="q17">
+                    <div class="question-text">17. Com que frequência você tem dificuldade para esperar nas situações onde cada um tem a sua vez?</div>
+                    <div class="options">
+                        <div class="option" data-value="0">Nunca</div>
+                        <div class="option" data-value="1">Quase nunca</div>
+                        <div class="option shaded" data-value="2">De vez em quando</div>
+                        <div class="option shaded" data-value="3">Quase sempre</div>
+                        <div class="option shaded" data-value="4">Sempre</div>
+                    </div>
+                </div>
+                
+                <div class="question" id="q18">
+                    <div class="question-text">18. Com que frequência você interrompe os outros quando eles estão ocupados?</div>
+                    <div class="options">
+                        <div class="option" data-value="0">Nunca</div>
+                        <div class="option" data-value="1">Quase nunca</div>
+                        <div class="option shaded" data-value="2">De vez em quando</div>
+                        <div class="option shaded" data-value="3">Quase sempre</div>
+                        <div class="option shaded" data-value="4">Sempre</div>
+                    </div>
+                </div>
+            </div>
+            
+            <button type="button" id="submit-btn" class="btn" disabled>Ver Resultados</button>
+        </form>
+        
+        <div id="results" class="results">
+            <div class="score">Pontuação Total: <span id="total-score">0</span>/72</div>
+            
+            <div id="probability-result" class="probability-result">
+                <!-- Resultado da probabilidade será inserido aqui -->
+            </div>
+            
+            <div class="recommendation">
+                <h3>Resultado da Parte A</h3>
+                <p id="part-a-result">Você marcou X respostas na área sombreada da Parte A.</p>
+                <p id="part-a-recommendation"></p>
+            </div>
+            
+            <div class="recommendation">
+                <h3>Resultado da Parte B</h3>
+                <p id="part-b-result">Você marcou X respostas na área sombreada da Parte B.</p>
+                <p id="part-b-recommendation"></p>
+            </div>
+            
+            <div class="criteria">
+                <h3>Critérios Adicionais para Diagnóstico</h3>
+                <p>O questionário ASRS-18 é útil para avaliar apenas o primeiro dos critérios (critério A) para se fazer o diagnóstico. Existem outros critérios que também são necessários na avaliação médica:</p>
+                <ul>
+                    <li><strong>Critério B:</strong> Alguns desses sintomas devem estar presentes desde precocemente (antes dos 12 anos).</li>
+                    <li><strong>Critério C:</strong> Se os problemas causados pelos sintomas existem em pelo menos dois contextos diferentes (exemplo: no trabalho, na vida social, na faculdade e no relacionamento conjugal ou familiar).</li>
+                    <li><strong>Critério D:</strong> Há problemas evidentes de vida diária por conta dos sintomas.</li>
+                    <li><strong>Critério E:</strong> A existência de outro(s) transtorno(s) como depressão, deficiência mental, psicose, etc. Se for o caso, os sintomas não podem ser atribuídos exclusivamente ao TDAH.</li>
+                </ul>
+                <p><strong>Importante:</strong> Este questionário é apenas uma ferramenta de triagem e não substitui uma avaliação médica profissional.</p>
+            </div>
+        </div>
+        
+        <div class="references">
+            <h3>Referências</h3>
+            <p>O autoteste foi desenvolvido com a Organização Mundial de Saúde (OMS) pelo grupo que inclui o seguinte time de psiquiatras e pesquisadores:</p>
+            <ul>
+                <li>Lenard Adler, MD – professor associado de psiquiatria e neurologia da Faculdade de Medicina da Universidade de Nova York.</li>
+                <li>Ronald C. Kessler, PhD – Professor do Departamento de Políticas de Cuidado em Saúde da Faculdade de Medicina de Harvard</li>
+                <li>Thomas Spencer, MD – professor associado de psiquiatria na Faculdade de Medicina de Harvard.</li>
+            </ul>
+            <p>Fontes: <a href="https://www.hcp.med.harvard.edu/ncs/tpdir/adhd/18Q_ASRS_English.pdf" target="_blank">ASRS-18 English Version</a> | <a href="https://www.tdah.org.br" target="_blank">TDAH.org.br</a></p>
+        </div>
+    </div>
+
     <script>
-        // TODO O CÓDIGO JAVASCRIPT AQUI
+        document.addEventListener('DOMContentLoaded', function() {
+            const options = document.querySelectorAll('.option');
+            const submitBtn = document.getElementById('submit-btn');
+            const resultsDiv = document.getElementById('results');
+            const totalScoreSpan = document.getElementById('total-score');
+            const probabilityResultDiv = document.getElementById('probability-result');
+            const partAResult = document.getElementById('part-a-result');
+            const partARecommendation = document.getElementById('part-a-recommendation');
+            const partBResult = document.getElementById('part-b-result');
+            const partBRecommendation = document.getElementById('part-b-recommendation');
+            
+            // Armazenar respostas
+            let answers = {
+                partA: Array(6).fill(null),
+                partB: Array(12).fill(null)
+            };
+            
+            // Contador de perguntas respondidas
+            let answeredCount = 0;
+            
+            // Adicionar evento de clique às opções
+            options.forEach(option => {
+                option.addEventListener('click', function() {
+                    const question = this.closest('.question');
+                    const questionId = question.id;
+                    const questionIndex = parseInt(questionId.substring(1)) - 1;
+                    const value = parseInt(this.getAttribute('data-value'));
+                    
+                    // Remover seleção anterior nesta pergunta
+                    const previousSelected = question.querySelector('.option.selected');
+                    if (previousSelected) {
+                        previousSelected.classList.remove('selected');
+                    }
+                    
+                    // Adicionar seleção atual
+                    this.classList.add('selected');
+                    
+                    // Armazenar resposta
+                    if (questionIndex < 6) {
+                        // Parte A (perguntas 1-6)
+                        if (answers.partA[questionIndex] === null) answeredCount++;
+                        answers.partA[questionIndex] = value;
+                    } else {
+                        // Parte B (perguntas 7-18)
+                        const partBIndex = questionIndex - 6;
+                        if (answers.partB[partBIndex] === null) answeredCount++;
+                        answers.partB[partBIndex] = value;
+                    }
+                    
+                    // Verificar se todas as perguntas foram respondidas
+                    if (answeredCount === 18) {
+                        submitBtn.disabled = false;
+                    }
+                });
+            });
+            
+            // Adicionar evento ao botão de envio
+            submitBtn.addEventListener('click', function() {
+                calculateResults();
+                resultsDiv.style.display = 'block';
+                // Rolar para os resultados
+                resultsDiv.scrollIntoView({ behavior: 'smooth' });
+            });
+            
+            // Função para calcular os resultados
+            function calculateResults() {
+                // Calcular pontuações
+                let totalScore = 0;
+                let partAScore = 0;
+                let partBScore = 0;
+                
+                // Contar respostas na área sombreada
+                let partAShadedCount = 0;
+                let partBShadedCount = 0;
+                
+                // Parte A
+                answers.partA.forEach((answer, index) => {
+                    if (answer !== null) {
+                        partAScore += answer;
+                        totalScore += answer;
+                        
+                        // Verificar se está na área sombreada (valor >= 2)
+                        if (answer >= 2) {
+                            partAShadedCount++;
+                        }
+                    }
+                });
+                
+                // Parte B
+                answers.partB.forEach((answer, index) => {
+                    if (answer !== null) {
+                        partBScore += answer;
+                        totalScore += answer;
+                        
+                        // Verificar se está na área sombreada (valor >= 2)
+                        if (answer >= 2) {
+                            partBShadedCount++;
+                        }
+                    }
+                });
+                
+                // Atualizar a interface com os resultados
+                totalScoreSpan.textContent = totalScore;
+                partAResult.textContent = `Você marcou ${partAShadedCount} respostas na área sombreada da Parte A.`;
+                partBResult.textContent = `Você marcou ${partBShadedCount} respostas na área sombreada da Parte B.`;
+                
+                // Determinar a probabilidade de TDAH
+                let probabilityText = "";
+                let probabilityClass = "";
+                
+                // Baseado na pontuação total e no critério da Parte A
+                if (partAShadedCount >= 4) {
+                    probabilityText = "ALTA PROBABILIDADE DE TDAH";
+                    probabilityClass = "high-probability";
+                } else if (totalScore >= 30 || partAShadedCount >= 2) {
+                    probabilityText = "MÉDIA PROBABILIDADE DE TDAH";
+                    probabilityClass = "medium-probability";
+                } else if (totalScore >= 15) {
+                    probabilityText = "BAIXA PROBABILIDADE DE TDAH";
+                    probabilityClass = "low-probability";
+                } else {
+                    probabilityText = "BAIXA PROBABILIDADE DE TDAH";
+                    probabilityClass = "low-probability";
+                }
+                
+                // Atualizar o resultado de probabilidade
+                probabilityResultDiv.textContent = probabilityText;
+                probabilityResultDiv.className = `probability-result ${probabilityClass}`;
+                
+                // Recomendações para Parte A
+                if (partAShadedCount >= 4) {
+                    partARecommendation.textContent = "De acordo com o ASRS-18, seus sintomas são altamente compatíveis com um diagnóstico de TDAH. Recomenda-se uma investigação mais precisa com um profissional de saúde qualificado.";
+                    partARecommendation.style.color = "#d9534f";
+                    partARecommendation.style.fontWeight = "bold";
+                } else {
+                    partARecommendation.textContent = "De acordo com o ASRS-18, seus sintomas não atingem o limiar para alta compatibilidade com TDAH. No entanto, se você tem preocupações sobre sua saúde mental, ainda é recomendável consultar um profissional.";
+                    partARecommendation.style.color = "#5cb85c";
+                }
+                
+                // Recomendações para Parte B
+                if (partBShadedCount >= 6) {
+                    partBRecommendation.textContent = "A Parte B do questionário indica a presença significativa de sintomas que podem interferir no seu dia a dia. Isso reforça a importância de uma avaliação profissional.";
+                    partBRecommendation.style.color = "#d9534f";
+                } else if (partBShadedCount >= 3) {
+                    partBRecommendation.textContent = "A Parte B do questionário indica a presença moderada de sintomas. Considere discutir esses resultados com um profissional de saúde.";
+                    partBRecommendation.style.color = "#f0ad4e";
+                } else {
+                    partBRecommendation.textContent = "A Parte B do questionário indica poucos sintomas significativos. No entanto, se você tem preocupações, não hesite em buscar orientação profissional.";
+                    partBRecommendation.style.color = "#5cb85c";
+                }
+            }
+        });
     </script>
 </body>
 </html>
